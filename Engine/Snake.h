@@ -1,33 +1,40 @@
 #pragma once
 #include "Board.h"
+#include "Location.h"
+#include <random>
 
 class Snake
 {
 private:
-	class Segments
+	class Segment
 	{
 	public:
-		void InitHead(const Location& loc);
-		void InitBody();
-		void Follow(Segments& next);
+		void InitHead(const Location& in_loc);
+		void InitBody(Color c);
+		void Follow(const Segment& next);
 		void MoveBy(const Location& delta_loc);
-		
-		void Draw(Board& Brd) const;
+		void Draw(Board& brd) const;
+		const Location& GetLocation() const;
+
 	private:
 		Location loc;
 		Color c;
+		
 	};
 public:
 	Snake(const Location& loc);
 	void MoveBy(const Location& delta_loc);
+	Location GetHeadLocation(const Location& delta_loc) const;
 	void Grow();
-	void Draw(Board& Brd) const;
-	
-	
+	void Draw(Board& brd) const;
+	bool IsInTileExceptEnd(const Location& target)const;
+	bool IsInTile(const Location& target)const;
+
+
 private:
-	static constexpr Color HeadColor = Colors::Yellow;
-	static constexpr Color BodyColor = Colors::Green;
-	static constexpr int nSegmentMax = 100;
-	Segments segments[nSegmentMax];
+	
+	static constexpr Color headColor = Colors::Blue;
+	static constexpr int nSegmentsMax = 100;
+	Segment segments[nSegmentsMax];
 	int nSegments = 1;
 };

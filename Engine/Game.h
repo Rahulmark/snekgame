@@ -23,8 +23,12 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include"Snake.h"
+#include "Board.h"
+#include "Snake.h"
+#include"Goal.h"
 #include <random>
+
+
 class Game
 {
 public:
@@ -41,12 +45,18 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	Board Brd;
+	Board brd;
 	Snake snek;
-	Location delta_loc = { 1,0 };
-	static constexpr int snekMovePeriod = 20;
-	int snekMoveCounter = 0;
 	std::mt19937 rng;
+	Goal Goal;
+	Location delta_loc = { 1,0 };
+	static constexpr int snekMovePeriodMin = 4;
+	int snekMovePeriod = 20;
+	int snekMoveCounter = 0;
+	static constexpr int snekSpeedUpPeriod = 180;
+	int snekSpeedUpCounter = 0;
+	bool IsGameOveer = false;
+	bool IsGameStarted = false;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

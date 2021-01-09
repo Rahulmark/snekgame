@@ -51,7 +51,7 @@ public:
 	Graphics& operator=( const Graphics& ) = delete;
 	void EndFrame();
 	void BeginFrame();
-	void PutPixel( int x,int y,int r,int g,int b )
+	void PutPixel(int x, int y, int r, int g, int b)
 	{
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
@@ -61,6 +61,7 @@ public:
 	{
 		DrawRect(x0, y0, x0 + width, y0 + height, c);
 	}
+
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

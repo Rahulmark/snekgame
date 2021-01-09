@@ -20,14 +20,15 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-
+#include "SpriteCodex.h"
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	Brd(gfx),
+	brd(gfx),
 	rng(std::random_device()()),
-	snek({2,2})
+	snek({2,2}),
+	Goal(rng,brd,snek)
 {
 }
 
@@ -41,35 +42,88 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-	{
-		delta_loc = { 1,0 };
 	
-	}
-	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-	{
-		delta_loc = { -1,0 };
-
-	}
-	if (wnd.kbd.KeyIsPressed(VK_DOWN))
-	{
-		delta_loc = { 0,1 };
-
-	}
-	if (wnd.kbd.KeyIsPressed(VK_UP))
-	{
-		delta_loc = { 0,-1 };
-
-	}
-	snekMoveCounter++;
-	if(snekMoveCounter >= snekMovePeriod)
+	if (IsGameStarted) {
+		
+		if (!IsGameOveer)
 		{
-		snekMoveCounter = 0;
-		snek.MoveBy(delta_loc);
-		}
-}
+			
+			if (wnd.kbd.KeyIsPressed(VK_UP))
+			{
+				delta_loc = { 0,-1 };
+			}
+			else if (wnd.kbd.KeyIsPressed(VK_DOWN))
+			{
+				delta_loc = { 0,1 };
+			}
+			else if (wnd.kbd.KeyIsPressed(VK_LEFT))
+			{
+				delta_loc = { -1,0 };
+			}
+			else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+			{
+				delta_loc = { 1,0 };
+			}
+			++snekMoveCounter;
+			if (snekMoveCounter >= snekMovePeriod)
+			{
+				snekMoveCounter = 0;
+				Location next = snek.GetHeadLocation(delta_loc);
+				if (!brd.IsinsideBoard(next) || snek.IsInTile(next))
+				{
+					IsGameOveer = true;
+				}
+				else {
+					bool eating = (next == Goal.GetLocation());
+					if (eating)
+					{
+						snek.Grow();
+						
+					}
+					snek.MoveBy(delta_loc);
+					if (eating)
+					{
+						
+						Goal.Respawn(rng, brd, snek);
+						
+					}
+				}
 
+			}
+			++snekSpeedUpCounter;
+			if (snekSpeedUpCounter >= snekSpeedUpPeriod)
+			{
+				snekSpeedUpCounter = 0;
+				snekMovePeriod = std::max(snekMovePeriod - 1, snekMovePeriodMin);
+			}
+		}
+	}
+	else
+	{
+	 
+		IsGameStarted = wnd.kbd.KeyIsPressed(VK_RETURN);
+	}
+	
+}
 void Game::ComposeFrame()
 {
-	snek.Draw(Brd);
+
+	
+	if (IsGameStarted)
+	{
+		
+		snek.Draw(brd);
+		Goal.Draw(brd);
+
+		if (IsGameOveer)
+		{
+			SpriteCodex::DrawGameOver(350, 265, gfx);
+		}
+		brd.DrawBorder();
+	}
+	
+	
+	else{
+		SpriteCodex::DrawTitle(290, 225, gfx);
+	}
 }

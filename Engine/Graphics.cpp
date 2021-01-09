@@ -240,6 +240,8 @@ Graphics::Graphics( HWNDKey& key )
 		_aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight,16u ) );
 }
 
+
+
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)
@@ -322,21 +324,22 @@ void Graphics::DrawRect(int x0, int y0, int x1, int y1, Color c)
 	{
 		std::swap(x0, x1);
 	}
-	if (y0 > y1)
-	{
+	if (y0 > y1) {
 		std::swap(y0, y1);
 	}
-
-	for (int x = x0;x < x1;++x)
+	for (int y = y0; y < y1; ++y)
 	{
-		for (int y = y0;y < y1;++y)
+		for (int x = x0; x < x1; ++x)
 		{
-			PutPixel(x, y, c);
-
-
+				PutPixel(x, y, c);
+			
 		}
 	}
 }
+
+
+
+
 //////////////////////////////////////////////////
 //           Graphics Exception
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )
