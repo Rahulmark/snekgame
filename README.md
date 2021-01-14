@@ -1,2 +1,2 @@
 # snekgame
-this repository is created for learning purpose only
+This repository is created  only for learning purpose.
